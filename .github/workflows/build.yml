@@ -1,0 +1,31 @@
+name: Go Build Executable
+
+on:
+  push:
+    branches:
+      - main # Assuming 'main' is the default branch
+  pull_request:
+    branches:
+      - main # Assuming 'main' is the default branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5 # Use v5 for setup-go
+        with:
+          go-version: '1.23' # Based on go.mod
+
+      - name: Build
+        run: go build -v -o llmasagent cmd/llmasagent/main.go
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4 # Use v4 for upload-artifact
+        with:
+          name: llmasagent-executable
+          path: llmasagent
+          if-no-files-found: error # Fail the step if the executable is not found
